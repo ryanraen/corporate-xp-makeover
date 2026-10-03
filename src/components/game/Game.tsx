@@ -4,7 +4,7 @@ import { useGameStore } from "@/game/store";
 import wallpaper from "@/assets/corporate-office.jpg";
 import notepadIcon from "@/assets/xp/notepad.png";
 import computerIcon from "@/assets/xp/computer.png";
-import { GameOverlays, PhaseOverlay, QteOverlay, SleepyOverlay } from "./GameOverlays";
+import { PhaseOverlay, QteOverlay, SleepyOverlay } from "./GameOverlays";
 import { TaskApps } from "./TaskApps";
 
 const icons: Array<{ app: AppId; label: string; image?: string; glyph?: string }> = [
@@ -65,6 +65,3 @@ function Desktop() {
 function Progress({ label, value, tone }: { label: string; value: number; tone: string }) {
   return <div className="meter-row"><span>{label}</span><div className="xp-meter" aria-label={`${label}: ${Math.round(value)} percent`}><div className={tone} style={{ width: `${value}%` }}>{Array.from({ length: 20 }, (_, index) => <i key={index} />)}</div></div><b>{Math.round(value)}%</b></div>;
 }
-
-// Export kept explicit for test and composition clarity.
-export const GameOverlays = () => null;
