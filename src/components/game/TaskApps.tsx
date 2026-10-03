@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getBoss, type AppId, type MissionTask } from "@/game/bosses";
 import { useGameStore } from "@/game/store";
 import { XpWindow } from "./XpWindow";
@@ -58,6 +58,7 @@ function NotesApp({ task }: { task: MissionTask | undefined }) {
   const complete = useGameStore((state) => state.completeTask);
   const target = task?.instruction ?? "";
   const [value, setValue] = useState("");
+  useEffect(() => setValue(""), [task?.id]);
   if (!task) return <EmptyApp />;
   const correct = [...value].filter((char, index) => char === target[index]).length;
   return <div className="notes-app"><p className="typing-target">Please retype exactly:</p><blockquote>{target}</blockquote><textarea autoFocus value={value} onChange={(event) => { const next = event.target.value; setValue(next); if (next === target) complete(task.id); }} spellCheck={false} /><div className="status-line">{correct} / {target.length} correct characters</div></div>;
