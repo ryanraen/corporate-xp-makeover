@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { BOSSES, type AppId, type MissionTask } from "@/game/bosses";
+import { getBoss, type AppId, type MissionTask } from "@/game/bosses";
 import { useGameStore } from "@/game/store";
 import { XpWindow } from "./XpWindow";
 
@@ -11,11 +11,11 @@ const APP_META: Record<AppId, { title: string; icon: string }> = {
   recycle: { title: "Recycle Bin", icon: "♻" },
 };
 
-function currentTask(app: MissionTask["app"], bossIndex: number, completed: string[]) {
-  return BOSSES[bossIndex].missions.find((mission) => mission.app === app && !completed.includes(mission.id));
+function currentTask(app: MissionTask["app"], bossIndex: 0 | 1 | 2, completed: string[]) {
+  return getBoss(bossIndex).missions.find((mission) => mission.app === app && !completed.includes(mission.id));
 }
 
-function FileApp({ task }: { task?: MissionTask }) {
+function FileApp({ task }: { task: MissionTask | undefined }) {
   const complete = useGameStore((state) => state.completeTask);
   const [selected, setSelected] = useState<string | null>(null);
   const expected = task?.instruction.includes("Finance") ? "Finance" : task?.instruction.includes("HR") ? "HR" : "Misc";
@@ -34,7 +34,7 @@ function FileApp({ task }: { task?: MissionTask }) {
   </div>;
 }
 
-function SheetsApp({ task }: { task?: MissionTask }) {
+function SheetsApp({ task }: { task: MissionTask | undefined }) {
   const complete = useGameStore((state) => state.completeTask);
   const [value, setValue] = useState("38,500");
   if (!task) return <EmptyApp />;
@@ -54,7 +54,7 @@ function SheetsApp({ task }: { task?: MissionTask }) {
   </div>;
 }
 
-function NotesApp({ task }: { task?: MissionTask }) {
+function NotesApp({ task }: { task: MissionTask | undefined }) {
   const complete = useGameStore((state) => state.completeTask);
   const target = task?.instruction ?? "";
   const [value, setValue] = useState("");
@@ -72,7 +72,7 @@ function BreakRoom() {
   ], []);
   const [index, setIndex] = useState(0);
   return <div className="break-app" tabIndex={0} onWheel={(event) => setIndex((index + (event.deltaY > 0 ? 1 : slides.length - 1)) % slides.length)} onKeyDown={(event) => { if (event.key === "ArrowDown") setIndex((index + 1) % slides.length); if (event.key === "ArrowUp") setIndex((index + slides.length - 1) % slides.length); }}>
-    <div className="phone-video video-variant" data-slide={index}><div className="video-copy"><small>BREAK ROOM SHORTS</small><strong>{slides[index][0]}</strong><span>{slides[index][1]}</span></div><div className="video-controls"><button type="button" aria-label="Previous short" onClick={() => setIndex((index + slides.length - 1) % slides.length)}>▲</button><button type="button" aria-label="Next short" onClick={() => setIndex((index + 1) % slides.length)}>▼</button></div></div>
+    <div className="phone-video video-variant" data-slide={index}><div className="video-copy"><small>BREAK ROOM SHORTS</small><strong>{slides[index]?.[0] ?? "Quarterly serenity"}</strong><span>{slides[index]?.[1] ?? "A loading bar reaches 99% and stops."}</span></div><div className="video-controls"><button type="button" aria-label="Previous short" onClick={() => setIndex((index + slides.length - 1) % slides.length)}>▲</button><button type="button" aria-label="Next short" onClick={() => setIndex((index + 1) % slides.length)}>▼</button></div></div>
     <div className="energy-float">+3 energy/sec</div>
     <p>Scroll discreetly. Management visibility may vary.</p>
   </div>;

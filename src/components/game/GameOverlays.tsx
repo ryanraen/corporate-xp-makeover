@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BOSSES } from "@/game/bosses";
+import { getBoss } from "@/game/bosses";
 import { useGameStore } from "@/game/store";
 
 export function QteOverlay() {
@@ -9,8 +9,8 @@ export function QteOverlay() {
   const advance = useGameStore((state) => state.advanceQte);
   const fail = useGameStore((state) => state.failQte);
   const minimize = useGameStore((state) => state.minimizeApp);
-  const [left, setLeft] = useState(BOSSES[bossIndex].reactionWindow);
-  const boss = BOSSES[bossIndex];
+  const [left, setLeft] = useState(getBoss(bossIndex).reactionWindow);
+  const boss = getBoss(bossIndex);
 
   useEffect(() => {
     setLeft(boss.reactionWindow);
@@ -46,7 +46,7 @@ export function PhaseOverlay() {
   const beginPromotion = useGameStore((state) => state.beginPromotion);
   const finishCutscene = useGameStore((state) => state.finishCutscene);
   const restart = useGameStore((state) => state.restart);
-  const boss = BOSSES[bossIndex];
+  const boss = getBoss(bossIndex);
   if (phase === "playing" || phase === "title") return null;
   if (phase === "promotion") return <div className="qte-scrim"><section className="xp-dialog promotion-dialog"><header>Career Development</header><div><span className="dialog-icon">🏆</span><p>Promotion available.<br />Address the issue with your manager?</p></div><footer><button type="button" onClick={beginPromotion}>Slap</button></footer></section></div>;
   if (phase === "cutscene") return <div className={`cutscene ${cutsceneKind}`}><div className="cutscene-boss"><div className="boss-avatar giant">{boss.initials}</div><span>{boss.name}<br />{boss.title}</span></div><div className="comic-burst">{cutsceneKind === "slap" ? "SLAP!" : "WAKE UP!"}</div><button type="button" onClick={finishCutscene}>{cutsceneKind === "slap" ? "Continue promotion" : "Continue"} ▶▶</button></div>;

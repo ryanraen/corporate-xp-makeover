@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { BALANCE } from "./balance";
-import { BOSSES, type AppId } from "./bosses";
+import { getBoss, type AppId } from "./bosses";
 
 export type Phase = "title" | "playing" | "promotion" | "cutscene" | "gameOver" | "victory";
 export type QteType = null | "message" | "call" | "sneak";
@@ -66,7 +66,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   minimizeApp: (app) => set((state) => ({ minimizedApps: [...new Set([...state.minimizedApps, app])], focusedApp: state.focusedApp === app ? null : state.focusedApp, scrollSeconds: app === "break" ? 0 : state.scrollSeconds })),
   closeApp: (app) => set((state) => ({ openApps: state.openApps.filter((item) => item !== app), minimizedApps: state.minimizedApps.filter((item) => item !== app), focusedApp: state.focusedApp === app ? null : state.focusedApp, scrollSeconds: app === "break" ? 0 : state.scrollSeconds })),
   completeTask: (id) => set((state) => {
-    const valid = BOSSES[state.bossIndex].missions.some((mission) => mission.id === id);
+    const valid = getBoss(state.bossIndex).missions.some((mission) => mission.id === id);
     if (!valid || state.completed.includes(id) || state.phase !== "playing") return state;
     const xp = Math.min(100, state.xp + BALANCE.taskXp);
     return { completed: [...state.completed, id], xp, energy: Math.max(0, state.energy - BALANCE.taskEnergy), phase: xp >= 100 ? "promotion" : state.phase };
@@ -77,7 +77,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     const energy = Math.max(0, Math.min(100, state.energy + (resting ? BALANCE.scrollRecoveryPerSecond : -BALANCE.passiveDrainPerSecond)));
     if (energy <= 0) return { energy: 0, phase: "cutscene", cutsceneKind: "wake", activeQte: null };
     const scrollSeconds = resting ? state.scrollSeconds + 1 : 0;
-    const boss = BOSSES[state.bossIndex];
+    const boss = getBoss(state.bossIndex);
     let activeQte: QteType = null;
     if (resting && boss.sneakEvery && scrollSeconds > 0 && scrollSeconds % boss.sneakEvery === 0) activeQte = "sneak";
     else if (resting && boss.callEvery && scrollSeconds > 0 && scrollSeconds % boss.callEvery === 0) activeQte = "call";

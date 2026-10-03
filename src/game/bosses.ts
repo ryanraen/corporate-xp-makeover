@@ -93,3 +93,22 @@ export const BOSSES: Boss[] = [
     ],
   },
 ];
+
+export function getBoss(index: 0 | 1 | 2): Boss {
+  switch (index) {
+    case 1: return BOSSES[1] ?? BOSSES[0] ?? fallbackBoss;
+    case 2: return BOSSES[2] ?? BOSSES[0] ?? fallbackBoss;
+    default: return BOSSES[0] ?? fallbackBoss;
+  }
+}
+
+const fallbackBoss: Boss = {
+  id: "manager",
+  name: "Gary",
+  title: "Manager",
+  initials: "GM",
+  messageEvery: 12,
+  reactionWindow: 5,
+  messages: ["Please advise."],
+  missions: [],
+};

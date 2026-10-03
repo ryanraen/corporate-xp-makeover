@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BOSSES, type AppId } from "@/game/bosses";
+import { getBoss, type AppId } from "@/game/bosses";
 import { useGameStore } from "@/game/store";
 import wallpaper from "@/assets/corporate-office.jpg";
 import notepadIcon from "@/assets/xp/notepad.png";
@@ -42,7 +42,7 @@ function Desktop() {
   const caughtMessage = useGameStore((state) => state.caughtMessage);
   const dismissCaught = useGameStore((state) => state.dismissCaught);
   const [startOpen, setStartOpen] = useState(false);
-  const boss = BOSSES[bossIndex];
+  const boss = getBoss(bossIndex);
   useEffect(() => { const timer = window.setInterval(tick, 1000); return () => window.clearInterval(timer); }, [tick]);
   const hour = 9 + Math.floor((xp / 100) * 8);
 
